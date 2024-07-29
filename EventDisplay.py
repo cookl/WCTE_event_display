@@ -106,6 +106,9 @@ class EventDisplay:
         channels = indices[0].flatten()
         coordinates = indices[[2, 1]].reshape(2, -1).astype(np.float64).T
         coordinates += self.channel_position_offset(channels)
+        
+        #flip the y coordinate to account for the watchmal event display being upside down 
+        coordinates[:, 1] = -1*coordinates[:, 1]
         return coordinates
 
     def CNN_plot_data_2d(self, data, channel=None, transforms=None, **kwargs):

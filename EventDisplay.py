@@ -74,6 +74,7 @@ class EventDisplay:
         channel = channel % 19
         # if use_new_convention:
         theta = (channel > 6)*2*np.pi*(19-channel)/12 + ((channel > 0) & (channel <= 6))*2*np.pi*(7-channel)/6 + np.pi/2
+        
         radius = 0.2*(channel > 0) + 0.2*(channel > 6)
         # else:
         #     theta = (channel < 12)*2*np.pi*channel/12 + ((channel >= 12) & (channel < 18))*2*np.pi*(channel-12)/6
@@ -109,6 +110,7 @@ class EventDisplay:
         
         #flip the y coordinate to account for the watchmal event display being upside down 
         coordinates[:, 1] = -1*coordinates[:, 1]
+        coordinates[:, 0] = -1*coordinates[:, 0]
         return coordinates
 
     def CNN_plot_data_2d(self, data, channel=None, transforms=None, **kwargs):

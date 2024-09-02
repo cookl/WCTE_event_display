@@ -16,6 +16,10 @@ class EventDisplay:
         self.nmPMTs = len(self.mPMT_2D_projection[:,0])
 
         self.nChannels = 19*self.nmPMTs
+        self.mask_list = None
+
+    def mask_mPMTs(self,mask_list):
+        self.mask_list = mask_list
 
     def process_data(self,pmts, pmt_data,sum_data=True):
         #takes as input a list of pmts and pmt_data
@@ -30,9 +34,9 @@ class EventDisplay:
             else:
                 #chose the smallest value of data for that channel e.g time  
                 if(outData[iPMT]>0):
-                    outData[iPMT]=min(outData[iPMT],pmt_data)
+                    outData[iPMT]=min(outData[iPMT],channel_data)
                 else:
-                    outData[iPMT]=pmt_data
+                    outData[iPMT]=channel_data
                  
         return outData
 
@@ -87,9 +91,14 @@ class EventDisplay:
         axis_ranges = np.ptp(coordinates, axis=0)
         figsize = (20*scale, 16*scale*axis_ranges[1]/axis_ranges[0])
 
-        #set the style for plotting
         if not show_zero:
             data[data == 0] = np.nan
+            
+        if self.mask_list is not None:
+            for mPMT_mask in self.mask_list:
+                data[np.arange(self.nChannels)//19 == mPMT_mask] = np.nan    
+            
+        #set the style for plotting
         color_map = copy.copy(color_map)
         if style == "dark_background":
             edge_color = '0.35'
@@ -106,6 +115,7 @@ class EventDisplay:
         fig_width = matplotlib.rcParams['figure.figsize'][0]
         scale = fig_width/20
         
+        
         #draw circles around each mPMT
         pmt_circles = [Circle((pos[0], pos[1]), radius=0.48) for pos in self.mPMT_2D_projection[:,1:3]]
         ax.add_collection(PatchCollection(pmt_circles, facecolor='none', linewidths=1*scale, edgecolors=edge_color))
@@ -114,3 +124,18 @@ class EventDisplay:
         pmts = ax.scatter(coordinates[:, 0], coordinates[:, 1], c=data, s=7*scale*scale, cmap=color_map, norm=color_norm)
         fig.colorbar(pmts, ax=ax, pad=0, label=color_label)
     
+    def label_mPMT_plot(self, mPMT_label):
+        
+        coordinates_x = self.mPMT_2D_projection[:,1] 
+        coordinates_y = self.mPMT_2D_projection[:,2]
+        
+        if(len(mPMT_label)!= self.nmPMTs):
+            raise Exception ("label_mPMT_plot designed to have a label for each mPMT")
+        
+        for (x, y, label) in zip(coordinates_x,coordinates_y, mPMT_label):
+            if(label is not None):
+                plt.text(x, y, str(label), fontsize=10, ha='center', va='center')
+
+
+        
+        

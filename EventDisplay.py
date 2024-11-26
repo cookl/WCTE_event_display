@@ -7,12 +7,20 @@ from matplotlib.collections import PatchCollection
 import matplotlib.colors as colors
 import copy
 from contextlib import nullcontext
+import os
 
 class EventDisplay:
   
     def load_mPMT_positions(self,fileName):   
+        
+        # Get the directory where this script (module) is located
+        module_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Construct the full path to the file
+        file_path = os.path.join(module_dir, fileName)
+        
         #load the mpmt_positions file and create a series of variables used throughout the 
-        self.mPMT_2D_projection = np.loadtxt(fileName, delimiter=',', skiprows=1, dtype = int)
+        self.mPMT_2D_projection = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype = int)
         self.nmPMTs = len(self.mPMT_2D_projection[:,0])
 
         self.nChannels = 19*self.nmPMTs

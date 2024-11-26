@@ -113,7 +113,7 @@ class EventDisplay:
         #set the figure size and size of the PMTs in the display
         fig, ax = plt.subplots(figsize=figsize)
         fig_width = matplotlib.rcParams['figure.figsize'][0]
-        scale = fig_width/20
+        # scale = fig_width/20
         
         
         #draw circles around each mPMT
@@ -121,7 +121,7 @@ class EventDisplay:
         ax.add_collection(PatchCollection(pmt_circles, facecolor='none', linewidths=1*scale, edgecolors=edge_color))
 
         print(coordinates[:, 0].shape)
-        pmts = ax.scatter(coordinates[:, 0], coordinates[:, 1], c=data, s=7*scale*scale, cmap=color_map, norm=color_norm)
+        pmts = ax.scatter(coordinates[:, 0], coordinates[:, 1], c=data, s=10*scale*scale, cmap=color_map, norm=color_norm)
         fig.colorbar(pmts, ax=ax, pad=0, label=color_label)
     
     def label_mPMT_plot(self, mPMT_label):
@@ -137,5 +137,15 @@ class EventDisplay:
                 plt.text(x, y, str(label), fontsize=10, ha='center', va='center')
 
 
+    def label_mPMTs(self, mPMT_label):
+        #lower left corner of each mPMT
+        coordinates_x = self.mPMT_2D_projection[:,1]-0.5 
+        coordinates_y = self.mPMT_2D_projection[:,2]-0.5
         
+        if(len(mPMT_label)!= self.nmPMTs):
+            raise Exception ("label_mPMT_plot designed to have a label for each mPMT")
+        
+        for (x, y, label) in zip(coordinates_x,coordinates_y, mPMT_label):
+            if(label is not None):
+                plt.text(x, y, str(label), fontsize=6, ha='center', va='center')
         

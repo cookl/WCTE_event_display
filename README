@@ -1,0 +1,8 @@
+This is a standalone event display for wcte built by extracting code written for the event display in the watchmal repo
+
+main.py contains an example of how to use it. It takes as input a CSV file which maps the slot ID of the mPMT to a positionon the 2D event display (essentially unwrapping the cylinder), it also contains an angle in the CSV which determines the rotation of the mPMT w.r.t the 2D event display. This angle has been calculated using the WCTE geometry package which contains the orientation each mPMT has been installed in the detector with.
+
+mPMT_2D_projection_angles.csv contains this unwrapping for the real WCTE detector. WCSim originally used an older numbering + rotation scheme for the mPMTs and to make event displays from these files "mPMT_locations_WCSim_container_centreZ.csv" and "mPMT_locations_WCSim_container_centreX.csv" are included. mPMT_2D_projection_angles.csv unwraps the cylinder from the inside with the centre of the event display the most downstream mPMTs (Z axis going into the page). mPMT_locations_WCSim_container_centreZ.csv uses the same convention and mPMT_locations_WCSim_container_centreX.csv unwraps the cylinder with the x axis going into the page so the most downstream mPMTs are on the right of the event display.
+
+As in the example in main.py each channel is indexed by a single integer (mPMT_slot_id*19+PMT_position_number). process_data processes this data into a value for each channel (i.e. the data can have multiple hits on each channel and process_data converts that into a single value for each channel for an event display). By default it will sum the values for each channel but it can also chose the smallest value (designed for e.g. producing an event display of hit times). 
+

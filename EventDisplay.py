@@ -25,7 +25,37 @@ class EventDisplay:
 
         self.nChannels = 19*self.nmPMTs
         self.mask_list = None
+    
+    def load_wcsim_tubeno_mapping(self,fileName):
+        # Get the directory where this script (module) is located
+        module_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Construct the full path to the file
+        file_path = os.path.join(module_dir, fileName)
+        
+        data = np.loadtxt(file_path, skiprows=5, usecols=(0, 1, 2),dtype=int)
+        self.wcsim_tube_mapping = {row[0]: (row[1], row[2]) for row in data}
+        
+        # #load the mpmt_positions file and create a series of variables used throughout the 
+        # self.mPMT_2D_projection = np.loadtxt(file_path, delimiter=',', skiprows=1, dtype = int)
+        # self.nmPMTs = len(self.mPMT_2D_projection[:,0])
 
+        # self.nChannels = 19*self.nmPMTs
+        # self.mask_list = None
+    
+    def map_wcsim_tubeno_to_slot_pmt_id(self, tube_nos):
+        
+        if(self.wcsim_tube_mapping == None):
+            raise Exception("wcsim_tube_mapping not loaded in and calling mapping")
+        
+        # mPMT_id, PMT_pos = map(list,zip(*[self.wcsim_tube_mapping[tube_no] for tube_no in tube_nos]))
+        mPMT_id, PMT_pos = np.array([self.wcsim_tube_mapping[tube_no] for tube_no in tube_nos]).T
+        print(mPMT_id)
+        #in the geo file PMT pos is defined starting at 1 to -1 to start from 0
+        PMT_pos = PMT_pos-1
+        return mPMT_id, PMT_pos
+
+            
     def mask_mPMTs(self,mask_list):
         self.mask_list = mask_list
 

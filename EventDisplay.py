@@ -59,14 +59,17 @@ class EventDisplay:
     def mask_mPMTs(self,mask_list):
         self.mask_list = mask_list
 
-    def process_data(self,pmts, pmt_data,sum_data=True):
+    def process_data(self,mpmt_slot, pmt_pos, pmt_data,sum_data=True):
         #takes as input a list of pmts and pmt_data
         #returns a vector of length n_mpmts*19 with the charge in each column
         #if the sum_data is true then if we have multiple of the same channel in pmts then the entries are summed for that channel
+        assert all(0 <= x <= self.nmPMTs for x in mpmt_slot), "mPMT slot given out of size of the detector"
+        assert all(0 <= x <= 18 for x in pmt_pos), "PMT position should be between 0 and 18"
         
         outData = np.zeros(self.nChannels)
         
-        for iPMT, channel_data in zip(pmts,pmt_data):
+        for slot, pos, channel_data in zip(mpmt_slot,pmt_pos,pmt_data):
+            iPMT = (19*slot) + pos
             if(sum_data):
                 outData[iPMT]+=channel_data
             else:

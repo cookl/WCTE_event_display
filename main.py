@@ -36,8 +36,7 @@ for i, axis in enumerate(axes):
     #map from the tube number to the mPMT slot and position number
     data_to_plot = position[:,i]
     mPMT_id, PMT_pos = eventDisplay.map_wcsim_tubeno_to_slot_pmt_id(tube_no)
-    event_disp_pmt_no = (mPMT_id*19)+PMT_pos
-    data_to_plot = eventDisplay.process_data(event_disp_pmt_no,data_to_plot)
+    data_to_plot = eventDisplay.process_data(mPMT_id, PMT_pos,data_to_plot)
     eventDisplay.plotEventDisplay(data_to_plot,color_norm=colors.Normalize(), style= "dark_background")
 
     eventDisplay.label_mPMTs(np.arange(0,106))
@@ -56,8 +55,7 @@ data_to_plot = data["digi_hit_charge"][eventID]
 
 #map from the tube number to the mPMT slot and position number
 mPMT_id, PMT_pos = eventDisplay.map_wcsim_tubeno_to_slot_pmt_id(tube_no)
-event_disp_pmt_no = (mPMT_id*19)+PMT_pos
-data_to_plot = eventDisplay.process_data(event_disp_pmt_no,data_to_plot)
+data_to_plot = eventDisplay.process_data(mPMT_id,PMT_pos,data_to_plot)
 eventDisplay.plotEventDisplay(data_to_plot,color_norm=colors.Normalize(), style= "dark_background")
 
 # eventDisplay.label_mPMTs(np.arange(0,106))
